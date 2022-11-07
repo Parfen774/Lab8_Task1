@@ -2,7 +2,6 @@
 using System.Text;
 using System.Threading;
 using System.IO;
-//using System.ComponentModel;
 
 namespace Program
 {
@@ -75,6 +74,34 @@ namespace Program
             }
         }
 
+        public static void SetCursor(string side, string text)
+        {
+            int x = 0;
+            int y = 0;
+
+            switch (side)
+            {
+                case "Top":
+                    x = (width / 2) - (text.Length / 2);
+                    y = 1;
+                    break;
+                case "Right":
+                    x = width - text.Length - 1;
+                    y = height / 2;
+                    break;
+                case "Left":
+                    x = 1;
+                    y = height / 2;
+                    break;
+                case "Bottom":
+                    x = (width / 2) - (text.Length / 2);
+                    y = height - 2;
+                    break;
+            }
+
+            Console.SetCursorPosition(x, y);
+        }
+
         public static void CheckUpdateText(string[][] parameters, int seconds)
         {
             int secAppend, secDelete;
@@ -107,30 +134,7 @@ namespace Program
 
         public static void EditWindowText(string side, string color, string text, string param)
         {
-            int x = 0;
-            int y = 0;
-
-            switch (side)
-            {
-                case "Top":
-                    x = (width / 2) - (text.Length / 2);
-                    y = 1;
-                    break;
-                case "Right":
-                    x = width - text.Length - 1;
-                    y = height / 2;
-                    break;
-                case "Left":
-                    x = 1;
-                    y = height / 2;
-                    break;
-                case "Bottom":
-                    x = (width / 2) - (text.Length / 2);
-                    y = height - 2;
-                    break;
-            }
-
-            Console.SetCursorPosition(x, y);
+            SetCursor(side, text);
             SetColor(color);
 
             if (param == "Append") Console.Write(text);
