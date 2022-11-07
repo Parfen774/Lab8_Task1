@@ -8,8 +8,7 @@ namespace Program
     class Program
     {
         static string[] symbols = new string[] { ":", " - ", " [", "] ", ", " };
-        static int width;
-        static int height;
+        static int width, height, lastSecond;
 
         public static void Main()
         {
@@ -21,12 +20,22 @@ namespace Program
                 parameters[i] = GetParameters(lines[i]);
             }
 
+            DeterminatesLastSecond(parameters);
             DrawWindow();
 
-            for (int seconds = 0; ; seconds++)
+            for (int seconds = 0; seconds <= lastSecond; seconds++)
             {
                 CheckUpdateText(parameters, seconds);
                 Thread.Sleep(1000);
+            }
+        }
+
+        public static void DeterminatesLastSecond(string[][] parameters)
+        {
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (int.Parse(parameters[i][3]) > lastSecond)
+                    lastSecond = int.Parse(parameters[i][3]);
             }
         }
 
@@ -34,29 +43,43 @@ namespace Program
         {
             foreach (var symbol in symbols)
             {
-                line = line.Replace(symbol, "  ");
+                line = line.Replace(symbol, "--");
             }
 
-            return line.Split("  ");
+            if (line.Split("--").Length <= 4)
+            {
+                int index = line.IndexOf(' ');
+                line = line.Remove(index, 1).Insert(index, "--");
+            }
+
+            return line.Split("--");
         }
 
         public static void CheckUpdateText(string[][] parameters, int seconds)
         {
-            int secAppend;
-            int secDelete;
+            int secAppend, secDelete;
+            string side, text;
 
             foreach (var line in parameters)
             {
-                if (line.Length > 4)  // need fixed !!!
-                {
-                    secAppend = Int32.Parse(line[1]);
-                    secDelete = Int32.Parse(line[3]);
+                secAppend = Int32.Parse(line[1]);
+                secDelete = Int32.Parse(line[3]);
 
-                    if (secAppend == seconds)
-                        EditWindowText(line[4], line[6], "Append");
-                    if (secDelete == seconds)
-                        EditWindowText(line[4], line[6], "Delete");
+                if (line.Length <= 5)
+                {
+                    side = "Bottom";
+                    text = line[4];
                 }
+                else
+                {
+                    side = line[4];
+                    text = line[6];
+                }
+
+                if (secAppend == seconds)
+                    EditWindowText(side, text, "Append");
+                if (secDelete == seconds)
+                    EditWindowText(side, text, "Delete");
             }
         }
 
