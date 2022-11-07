@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading;
 using System.IO;
+using System.ComponentModel;
 
 namespace Program
 {
@@ -55,10 +56,29 @@ namespace Program
             return line.Split("--");
         }
 
+        public static void SetColor(string color)
+        {
+            switch (color)
+            {
+                case "Red":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case "Green":
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case "Blue":
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+            }
+        }
+
         public static void CheckUpdateText(string[][] parameters, int seconds)
         {
             int secAppend, secDelete;
-            string side, text;
+            string side, text, color;
 
             foreach (var line in parameters)
             {
@@ -68,22 +88,24 @@ namespace Program
                 if (line.Length <= 5)
                 {
                     side = "Bottom";
+                    color = "White";
                     text = line[4];
                 }
                 else
                 {
                     side = line[4];
+                    color = line[5];
                     text = line[6];
                 }
 
                 if (secAppend == seconds)
-                    EditWindowText(side, text, "Append");
+                    EditWindowText(side, color, text, "Append");
                 if (secDelete == seconds)
-                    EditWindowText(side, text, "Delete");
+                    EditWindowText(side, color, text, "Delete");
             }
         }
 
-        public static void EditWindowText(string side, string text, string param)
+        public static void EditWindowText(string side, string color, string text, string param)
         {
             int x = 0;
             int y = 0;
@@ -109,10 +131,12 @@ namespace Program
             }
 
             Console.SetCursorPosition(x, y);
+            SetColor(color);
 
             if (param == "Append") Console.Write(text);
             else if (param == "Delete") Console.Write(CreateEmptyString(text.Length));
 
+            Console.ResetColor();
             Console.SetCursorPosition(0, height);
         }
 
