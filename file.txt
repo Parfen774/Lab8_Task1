@@ -1,0 +1,5 @@
+00:01 - 00:03 [Top, Blue] Hello
+00:01 - 00:03 [Bottom, Blue] World
+00:02 - 00:06 [Right, Green] Yes
+00:04 - 00:07 [Left, Red] No
+00:07 - 00:15 Bill is a very motivated young man
